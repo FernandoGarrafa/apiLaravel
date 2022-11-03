@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-// use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\Book;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -13,7 +12,8 @@ class BooksApiTest extends TestCase
 
     /** @test */
     function can_get_all_books(){
-        $books = Book::factory()->create();
+        $books = Book::factory(4)->create();
+        dd($books);
         $this->getJson(route('books.index'))
             ->assertJsonFragment([
                 'title' => $books[0]->title
@@ -25,7 +25,7 @@ class BooksApiTest extends TestCase
     /** @test */
     function can_get_one_book(){
         $book = Book::factory()->create();
-        $this->getJson(route('books.show'))
+        $this->getJson(route('books.show', $book))
             ->assertJsonFragment([
                 'title' => $book->title
         ]);
@@ -33,11 +33,10 @@ class BooksApiTest extends TestCase
 
     /** @test */
     function can_create_books(){
-
         $this->postJson(route('books.store'), [])
             ->assertJsonValidationErrorFor('title');
 
-        $this->postJson('books.store', [
+        $this->postJson(route('books.store'), [
             'title' => 'Mi nuevo libro'
         ])->assertJsonFragment([
             'title' => 'Mi nuevo libro'
