@@ -13,7 +13,6 @@ class BooksApiTest extends TestCase
     /** @test */
     function can_get_all_books(){
         $books = Book::factory(4)->create();
-        dd($books);
         $this->getJson(route('books.index'))
             ->assertJsonFragment([
                 'title' => $books[0]->title
